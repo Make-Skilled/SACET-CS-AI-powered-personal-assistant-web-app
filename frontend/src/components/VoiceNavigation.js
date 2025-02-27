@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
 import LoadingAnimation from './LoadingAnimation';
+import { saveSearch } from '../services/searchService';
 
 const VoiceNavigation = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [transcribedText, setTranscribedText] = useState('');
+  const [error, setError] = useState('');
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
 
@@ -23,18 +25,26 @@ const VoiceNavigation = () => {
     'check weather': 'https://weather.com'
   };
 
-  const handleNavigation = (text) => {
-    const lowerText = text.toLowerCase();
-    
-    for (const [command, url] of Object.entries(commands)) {
-      if (lowerText.includes(command)) {
-        window.open(url, '_blank');
-        return;
+  const handleNavigation = async (text) => {
+    try {
+      // Save the search first
+      await saveSearch(text);
+      
+      const lowerText = text.toLowerCase();
+      
+      for (const [command, url] of Object.entries(commands)) {
+        if (lowerText.includes(command)) {
+          window.open(url, '_blank');
+          return;
+        }
       }
-    }
 
-    const searchQuery = encodeURIComponent(text);
-    window.open(`https://www.google.com/search?q=${searchQuery}`, '_blank');
+      const searchQuery = encodeURIComponent(text);
+      window.open(`https://www.google.com/search?q=${searchQuery}`, '_blank');
+    } catch (err) {
+      setError('Failed to save search history');
+      console.error('Error saving search:', err);
+    }
   };
 
   const startRecording = async () => {
@@ -219,12 +229,6 @@ const VoiceNavigation = () => {
               <LoadingAnimation />
             ) : (
               <div className="result">
-                <h3 className="text-xl font-semibold mb-3 text-blue-600">Transcribed Text:</h3>
-                {transcribedText ? (
-                  <p className="text-lg text-red-600 font-medium">{transcribedText}</p>
-                ) : (
-                  <p className="text-lg text-gray-500">Click "Start Recording" to begin</p>
-                )}
               </div>
             )}
           </div>
