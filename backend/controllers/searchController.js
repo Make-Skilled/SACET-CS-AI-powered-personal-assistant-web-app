@@ -30,3 +30,28 @@ exports.getSearches = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+// Delete a search
+exports.deleteSearch = async (req, res) => {
+    try {
+        const search = await Search.findById(req.params.id);
+
+        if (!search) {
+            return res.status(404).json({ msg: 'Search not found' });
+        }
+
+        // Make sure user owns search
+        if (search.user.toString() !== req.user.id) {
+            return res.status(401).json({ msg: 'User not authorized' });
+        }
+
+        await search.deleteOne();
+        res.json({ msg: 'Search deleted' });
+    } catch (err) {
+        console.error(err.message);
+        if (err.kind === 'ObjectId') {
+            return res.status(404).json({ msg: 'Search not found' });
+        }
+        res.status(500).send('Server error');
+    }
+};

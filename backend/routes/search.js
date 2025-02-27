@@ -13,4 +13,9 @@ router.post('/', auth, searchController.saveSearch);
 // @access  Private
 router.get('/', auth, searchController.getSearches);
 
+// @route   DELETE api/search/:id
+// @desc    Delete a search
+// @access  Private
+router.delete('/:id', auth, searchController.deleteSearch);
+
 module.exports = router;
