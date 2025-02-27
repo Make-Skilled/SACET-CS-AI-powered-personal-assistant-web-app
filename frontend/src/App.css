@@ -217,3 +217,63 @@ button.stop:hover {
   font-size: 0.9rem;
   display: block;
 }
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.controls {
+  margin: 20px 0;
+}
+
+button {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button.start {
+  background-color: #4CAF50;
+  color: white;
+}
+
+button.stop {
+  background-color: #f44336;
+  color: white;
+}
+
+button:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.transcription {
+  margin-top: 30px;
+  max-width: 600px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.transcription h2 {
+  margin-bottom: 15px;
+}
+
+.transcription p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
