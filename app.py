@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import speech_recognition as sr
-import csv
 import os
 import wave
 import io
@@ -11,9 +10,6 @@ CORS(app)  # Enable CORS for all routes
 
 # Path to store the audio file
 AUDIO_FILE_PATH = "recorded_audio.wav"
-
-# Path to store the CSV file
-CSV_FILE_PATH = "recorded_text.csv"
 
 # Initialize the recognizer
 recognizer = sr.Recognizer()
@@ -82,11 +78,6 @@ def stop_recording():
             if text is None:
                 raise sr.UnknownValueError(f"Speech recognition failed after multiple attempts. Errors: {'; '.join(exceptions)}")
             
-            # Save to CSV
-            with open(CSV_FILE_PATH, 'a', newline='') as csvfile:
-                csvwriter = csv.writer(csvfile)
-                csvwriter.writerow([text])
-            
             return jsonify(status="Recording stopped", text=text)
             
     except sr.UnknownValueError as e:
@@ -105,17 +96,7 @@ def stop_recording():
 
 @app.route('/get_text', methods=['GET'])
 def get_text():
-    try:
-        with open(CSV_FILE_PATH, 'r') as csvfile:
-            csvreader = csv.reader(csvfile)
-            text_list = [row[0] for row in csvreader]
-        return jsonify(text_list=text_list)
-    except Exception as e:
-        return jsonify(status="Error", error=str(e))
+    return jsonify(status="Error", error="This endpoint is no longer supported.")
 
 if __name__ == '__main__':
-    if not os.path.exists(CSV_FILE_PATH):
-        with open(CSV_FILE_PATH, 'w', newline='') as csvfile:
-            csvwriter = csv.writer(csvfile)
-            csvwriter.writerow(['Text'])
     app.run(debug=True, port=5500)
