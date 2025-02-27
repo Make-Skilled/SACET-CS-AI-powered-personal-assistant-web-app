@@ -50,3 +50,28 @@ export const getSearchHistory = async () => {
         throw error;
     }
 };
+
+export const deleteSearch = async (searchId) => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        const response = await fetch(`${API_URL}/${searchId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': token
+            }
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to delete search');
+        }
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
